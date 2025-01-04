@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.Flags().BoolVarP(&cfg.Fetch, "fetch", "f", true, "set whether to fetch before cleaning up branches")
+	rootCmd.PersistentFlags().BoolVarP(&cfg.Fetch, "fetch", "f", true, "set whether to fetch before cleaning up branches")
 }
 
 func Execute() {

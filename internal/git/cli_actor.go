@@ -21,3 +21,17 @@ func (g *cliActor) FetchAll(ctx context.Context) error {
 
 	return nil
 }
+
+func (g *cliActor) DeleteBranches(ctx context.Context, branches []Branch) error {
+	args := []string{"branch", "-d"}
+	for _, branch := range branches {
+		args = append(args, branch.Name)
+	}
+
+	cmd := exec.CommandContext(ctx, "git", args...)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("%w: %w", ErrFailedToDeleteBranches, err)
+	}
+
+	return nil
+}

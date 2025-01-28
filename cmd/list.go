@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/huGgW/git-cl/internal/git"
-
 	"github.com/spf13/cobra"
 )
 
@@ -24,13 +22,13 @@ func listCmdRunE(cmd *cobra.Command, args []string) error {
 
 	ctx := cmd.Context()
 
-	branches, err := git.GetLocalBranches(ctx)
+	branches, err := deps.viewer.GetLocalBranches(ctx)
 	if err != nil {
 		return fmt.Errorf("%s: %w", wrapErrMsg, err)
 	}
 
 	for _, branch := range branches.All {
-		if branches.Current == branch {
+		if branches.Current != nil && *branches.Current == branch {
 			fmt.Printf("%s <- current\n", branch)
 		} else {
 			fmt.Println(branch)

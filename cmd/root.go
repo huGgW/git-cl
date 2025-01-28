@@ -11,7 +11,11 @@ import (
 )
 
 var (
-	cfg config.Config
+	cfg  config.Config
+	deps struct {
+		viewer git.Viewer
+		actor  git.Actor
+	}
 )
 
 var rootCmd = &cobra.Command{
@@ -25,6 +29,8 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&cfg.Fetch, "fetch", "f", true, "set whether to fetch before cleaning up branches")
+	deps.viewer = git.NewGogitViewer()
+	deps.actor = git.NewCliActor()
 }
 
 func Execute() {
@@ -36,7 +42,7 @@ func Execute() {
 
 func persistentPreRunE(cmd *cobra.Command, args []string) error {
 	if cfg.Fetch {
-		if err := git.FetchAll(context.Background()); err != nil {
+		if err := deps.actor.FetchAll(context.Background()); err != nil {
 			return fmt.Errorf("%w", err)
 		}
 	}

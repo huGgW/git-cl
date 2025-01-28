@@ -22,16 +22,16 @@ func listCmdRunE(cmd *cobra.Command, args []string) error {
 
 	ctx := cmd.Context()
 
-	branches, err := deps.viewer.GetLocalBranches(ctx)
+	localBranches, err := deps.viewer.GetLocalBranches(ctx)
 	if err != nil {
 		return fmt.Errorf("%s: %w", wrapErrMsg, err)
 	}
 
-	for _, branch := range branches.All {
-		if branches.Current != nil && *branches.Current == branch {
-			fmt.Printf("%s <- current\n", branch)
+	for _, branch := range localBranches.Branches {
+		if branch.IsCurrent {
+			fmt.Printf("%s <- current\n", branch.Name)
 		} else {
-			fmt.Println(branch)
+			fmt.Println(branch.Name)
 		}
 	}
 	return nil

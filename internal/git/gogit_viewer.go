@@ -40,19 +40,21 @@ func (g *gogitViewer) GetLocalBranches(ctx context.Context) (LocalBranches, erro
 	if err != nil {
 		return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 	}
-	for branchRef, err := range iterator.ReferenceIterToSeq(refIter) {
+	for branchRef, err := range referenceIterToSeq(refIter) {
 		if err != nil {
 			return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		}
 
 		branchName := branchRef.Name().Short()
-		localBranches.All = append(localBranches.All, branchName)
+		branch := Branch{Name: branchName}
 
 		if eq, err := g.refEqual(head, branchRef); err != nil {
 			return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		} else if eq {
-			localBranches.Current = &branchName
+			branch.IsCurrent = true
 		}
+
+		localBranches.Branches = append(localBranches.Branches, branch)
 	}
 
 	return localBranches, nil

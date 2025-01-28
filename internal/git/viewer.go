@@ -14,6 +14,10 @@ type Viewer interface {
 }
 
 type LocalBranches struct {
-	All     []string
-	Current *string
+	Branches []Branch
+}
+
+type Branch struct {
+	Name      string
+	IsCurrent bool
 }

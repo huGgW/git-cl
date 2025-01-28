@@ -11,6 +11,7 @@ var (
 
 type Viewer interface {
 	GetLocalBranches(context.Context) (LocalBranches, error)
+	FilterLocalBranches(ctx context.Context, branches LocalBranches, filters ...Filter) []Branch
 }
 
 type LocalBranches struct {
@@ -21,3 +22,5 @@ type Branch struct {
 	Name      string
 	IsCurrent bool
 }
+
+type Filter func(Branch) bool

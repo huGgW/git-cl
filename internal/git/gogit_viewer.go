@@ -4,6 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
+	"iter"
+	"slices"
 
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -58,6 +61,20 @@ func (g *gogitViewer) GetLocalBranches(ctx context.Context) (LocalBranches, erro
 	}
 
 	return localBranches, nil
+}
+
+func (g *gogitViewer) FilterLocalBranches(ctx context.Context, branches LocalBranches, filters ...Filter) []Branch {
+	currentExcludeFilter := func(branch Branch) bool {
+		return !branch.IsCurrent
+	}
+
+	branchSeq := slices.Values(branches.Branches)
+	branchSeq = iterator.Filter(branchSeq, currentExcludeFilter)
+	for _, filter := range filters {
+		branchSeq = iterator.Filter(branchSeq, filter)
+	}
+
+	return slices.Collect(branchSeq)
 }
 
 func (g *gogitViewer) openRepo() (*gogit.Repository, error) {

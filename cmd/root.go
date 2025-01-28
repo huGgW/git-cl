@@ -23,8 +23,6 @@ var rootCmd = &cobra.Command{
 	Short:             "gitcl is a tool for cleaning up local branches of git repository",
 	ValidArgs:         []string{},
 	PersistentPreRunE: persistentPreRunE,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

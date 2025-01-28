@@ -7,7 +7,8 @@ import (
 
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/huGgW/git-cl/internal/iterator"
+	"github.com/go-git/go-git/v5/plumbing/storer"
+	"github.com/huGgW/git-cl/pkg/iterator"
 )
 
 var (
@@ -77,4 +78,26 @@ func (g *gogitViewer) getHead(repo *gogit.Repository) (*plumbing.Reference, erro
 
 func (g *gogitViewer) refEqual(r1, r2 *plumbing.Reference) (bool, error) {
 	return r1.Hash() == r2.Hash(), nil
+}
+
+func referenceIterToSeq(iter storer.ReferenceIter) iter.Seq2[*plumbing.Reference, error] {
+	return func(yield func(*plumbing.Reference, error) bool) {
+		defer iter.Close()
+
+		for {
+			ref, err := iter.Next()
+			if err != nil {
+				if errors.Is(err, io.EOF) {
+					return
+				}
+
+				yield(nil, err)
+				return
+			}
+
+			if !yield(ref, nil) {
+				return
+			}
+		}
+	}
 }

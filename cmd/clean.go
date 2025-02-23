@@ -21,13 +21,7 @@ var (
 func init() {
 	rootCmd.AddCommand(cleanCmd)
 	cleanCmd.Flags().BoolVarP(&dryRun, "dry", "d", false, "dry run the command (without actually deleting)")
-	cleanCmd.Flags().StringSliceVarP(
-		&blackList,
-		"blacklist",
-		"b",
-		nil,
-		"list of branches to be excluded from deletion",
-	)
+	cleanCmd.Flags().StringSliceVarP(&blackList, "blacklist", "b", nil, "list of branches to be excluded from deletion")
 }
 
 func cleanCmdRunE(cmd *cobra.Command, args []string) error {

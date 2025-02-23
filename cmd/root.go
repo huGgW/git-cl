@@ -26,7 +26,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().BoolVarP(&cfg.Fetch, "fetch", "f", true, "set whether to fetch before cleaning up branches")
+	rootCmd.PersistentFlags().BoolVarP(&cfg.Fetch, "fetch", "f", false, "set whether to fetch before cleaning up branches")
 	deps.viewer = git.NewGogitViewer()
 	deps.actor = git.NewCliActor()
 }

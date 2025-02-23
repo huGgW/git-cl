@@ -12,8 +12,13 @@ var cleanCmd = &cobra.Command{
 	RunE:  cleanCmdRunE,
 }
 
+var (
+	dryRun bool
+)
+
 func init() {
 	rootCmd.AddCommand(cleanCmd)
+	cleanCmd.Flags().BoolVarP(&dryRun, "dry", "d", false, "dry run the command (without actually deleting)")
 }
 
 func cleanCmdRunE(cmd *cobra.Command, args []string) error {
@@ -26,8 +31,20 @@ func cleanCmdRunE(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("%s: %w", wrapErrMsg, err)
 	}
 
-	branches := deps.viewer.FilterLocalBranches(ctx, localBranches)
-	if err := deps.actor.DeleteBranches(ctx, branches); err != nil {
+	branchesToBeDeleted := deps.viewer.FilterLocalBranches(
+		ctx,
+		localBranches,
+	)
+
+	fmt.Println("Branches to be deleted:")
+	for _, branch := range branchesToBeDeleted {
+		fmt.Println(branch.Name)
+	}
+	if dryRun { // Do not actually delete branches if dry run is true
+		return nil
+	}
+
+	if err := deps.actor.DeleteBranches(ctx, branchesToBeDeleted); err != nil {
 		return fmt.Errorf("%s: %w", wrapErrMsg, err)
 	}
 

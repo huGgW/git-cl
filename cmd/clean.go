@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/huGgW/git-cl/internal/git"
 	"github.com/spf13/cobra"
 )
 
@@ -13,12 +14,14 @@ var cleanCmd = &cobra.Command{
 }
 
 var (
-	dryRun bool
+	blackList []string
+	dryRun    bool
 )
 
 func init() {
 	rootCmd.AddCommand(cleanCmd)
 	cleanCmd.Flags().BoolVarP(&dryRun, "dry", "d", false, "dry run the command (without actually deleting)")
+	cleanCmd.Flags().StringSliceVarP(&blackList, "blacklist", "b", nil, "list of branches to be excluded from deletion")
 }
 
 func cleanCmdRunE(cmd *cobra.Command, args []string) error {
@@ -34,6 +37,7 @@ func cleanCmdRunE(cmd *cobra.Command, args []string) error {
 	branchesToBeDeleted := deps.viewer.FilterLocalBranches(
 		ctx,
 		localBranches,
+		filters()...,
 	)
 
 	fmt.Println("Branches to be deleted:")
@@ -49,4 +53,14 @@ func cleanCmdRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func filters() []git.Filter {
+	var filters []git.Filter
+
+	if len(blackList) > 0 {
+		filters = append(filters, git.BlacklistFilterProvider(blackList))
+	}
+
+	return filters
 }

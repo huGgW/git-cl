@@ -19,8 +19,8 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:               "gitcl",
-	Short:             "gitcl is a tool for cleaning up local branches of git repository",
+	Use:               "git-cl",
+	Short:             "git-cl is a tool for cleaning up local branches of git repository",
 	ValidArgs:         []string{},
 	PersistentPreRunE: persistentPreRunE,
 }

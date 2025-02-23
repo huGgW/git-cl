@@ -23,6 +23,10 @@ func (g *cliActor) FetchAll(ctx context.Context) error {
 }
 
 func (g *cliActor) DeleteBranches(ctx context.Context, branches []Branch) error {
+	if len(branches) == 0 {
+		return nil
+	}
+
 	args := []string{"branch", "-d"}
 	for _, branch := range branches {
 		args = append(args, branch.Name)

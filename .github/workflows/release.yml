@@ -2,8 +2,6 @@ name: GoReleaser
 
 on:
   push:
-    branches:
-      - main
     tags:
       - v*
 
@@ -28,3 +26,5 @@ jobs:
           distribution: goreleaser
           version: latest
           args: release --clean
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -3,6 +3,8 @@ package git
 import (
 	"context"
 	"errors"
+
+	"github.com/huGgW/git-cl/pkg/set"
 )
 
 var (
@@ -24,3 +26,11 @@ type Branch struct {
 }
 
 type Filter func(Branch) bool
+type FilterProvider func([]string) Filter
+
+func BlacklistFilterProvider(blacklist []string) Filter {
+	blacklistSet := set.SetOf(blacklist...)
+	return func(branch Branch) bool {
+		return !blacklistSet.Exists(branch.Name)
+	}
+}

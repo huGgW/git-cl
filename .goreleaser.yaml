@@ -1,0 +1,9 @@
+version: 2
+project_name: git-cl
+builds:
+  - goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64

@@ -28,6 +28,10 @@ type Branch struct {
 type Filter func(Branch) bool
 type FilterProvider func([]string) Filter
 
+var currentExcludeFilter Filter = func(branch Branch) bool {
+	return !branch.IsCurrent
+}
+
 func BlacklistFilterProvider(blacklist []string) Filter {
 	blacklistSet := set.SetOf(blacklist...)
 	return func(branch Branch) bool {

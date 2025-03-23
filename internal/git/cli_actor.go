@@ -27,7 +27,7 @@ func (g *cliActor) DeleteBranches(ctx context.Context, branches []Branch) error 
 		return nil
 	}
 
-	args := []string{"branch", "-d"}
+	args := []string{"branch", "-D"}
 	for _, branch := range branches {
 		args = append(args, branch.Name)
 	}

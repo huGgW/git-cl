@@ -1,9 +1,11 @@
-package git
+package actor
 
 import (
 	"context"
 	"fmt"
 	"os/exec"
+
+	"github.com/huGgW/git-cl/internal/git/model"
 )
 
 type cliActor struct {
@@ -22,7 +24,7 @@ func (g *cliActor) FetchAll(ctx context.Context) error {
 	return nil
 }
 
-func (g *cliActor) DeleteBranches(ctx context.Context, branches []Branch) error {
+func (g *cliActor) DeleteBranches(ctx context.Context, branches []model.Branch) error {
 	if len(branches) == 0 {
 		return nil
 	}

@@ -6,15 +6,16 @@ import (
 	"os"
 
 	"github.com/huGgW/git-cl/internal/config"
-	"github.com/huGgW/git-cl/internal/git"
+	"github.com/huGgW/git-cl/internal/git/actor"
+	"github.com/huGgW/git-cl/internal/git/viewer"
 	"github.com/spf13/cobra"
 )
 
 var (
 	cfg  config.Config
 	deps struct {
-		viewer git.Viewer
-		actor  git.Actor
+		viewer viewer.Viewer
+		actor  actor.Actor
 	}
 )
 
@@ -27,8 +28,8 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&cfg.Fetch, "fetch", "f", false, "set whether to fetch before cleaning up branches")
-	deps.viewer = git.NewGogitViewer()
-	deps.actor = git.NewCliActor()
+	deps.viewer = viewer.NewGogitViewer()
+	deps.actor = actor.NewCliActor()
 }
 
 func Execute() {

@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/huGgW/git-cl/internal/git"
+	"github.com/huGgW/git-cl/internal/git/filter"
 	"github.com/spf13/cobra"
 )
 
@@ -55,11 +55,11 @@ func cleanCmdRunE(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func filters() []git.Filter {
-	var filters []git.Filter
+func filters() []filter.Filter {
+	var filters []filter.Filter
 
 	if len(blackList) > 0 {
-		filters = append(filters, git.BlacklistFilterProvider(blackList))
+		filters = append(filters, filter.BlacklistFilterProvider(blackList))
 	}
 
 	return filters

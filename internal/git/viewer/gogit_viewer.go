@@ -1,4 +1,4 @@
-package git
+package viewer
 
 import (
 	"context"
@@ -11,6 +11,8 @@ import (
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/storer"
+	"github.com/huGgW/git-cl/internal/git/filter"
+	"github.com/huGgW/git-cl/internal/git/model"
 	"github.com/huGgW/git-cl/pkg/iterator"
 )
 
@@ -26,33 +28,33 @@ func NewGogitViewer() *gogitViewer {
 	return &gogitViewer{}
 }
 
-func (g *gogitViewer) GetLocalBranches(ctx context.Context) (LocalBranches, error) {
-	var localBranches LocalBranches
+func (g *gogitViewer) GetLocalBranches(ctx context.Context) (model.LocalBranches, error) {
+	var localBranches model.LocalBranches
 
 	repo, err := g.openRepo()
 	if err != nil {
-		return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
+		return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 	}
 
 	head, err := g.getHead(repo)
 	if err != nil {
-		return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
+		return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 	}
 
 	refIter, err := repo.Branches()
 	if err != nil {
-		return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
+		return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 	}
 	for branchRef, err := range referenceIterToSeq(refIter) {
 		if err != nil {
-			return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
+			return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		}
 
 		branchName := branchRef.Name().Short()
-		branch := Branch{Name: branchName}
+		branch := model.Branch{Name: branchName}
 
 		if eq, err := g.refEqual(head, branchRef); err != nil {
-			return LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
+			return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		} else if eq {
 			branch.IsCurrent = true
 		}
@@ -63,14 +65,14 @@ func (g *gogitViewer) GetLocalBranches(ctx context.Context) (LocalBranches, erro
 	return localBranches, nil
 }
 
-func (g *gogitViewer) FilterLocalBranches(ctx context.Context, branches LocalBranches, filters ...Filter) []Branch {
+func (g *gogitViewer) FilterLocalBranches(ctx context.Context, branches model.LocalBranches, filters ...filter.Filter) []model.Branch {
 	branchSeq := slices.Values(branches.Branches)
 
 	// add current exclude filter because branch deletion cannot delete the current branch
-	branchSeq = iterator.Filter(branchSeq, currentExcludeFilter)
+	branchSeq = iterator.Filter(branchSeq, filter.CurrentExcludeFilter)
 
-	for _, filter := range filters {
-		branchSeq = iterator.Filter(branchSeq, filter)
+	for _, f := range filters {
+		branchSeq = iterator.Filter(branchSeq, f)
 	}
 
 	return slices.Collect(branchSeq)

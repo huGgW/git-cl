@@ -1,8 +1,10 @@
-package git
+package actor
 
 import (
 	"context"
 	"errors"
+
+	"github.com/huGgW/git-cl/internal/git/model"
 )
 
 var (
@@ -12,5 +14,5 @@ var (
 
 type Actor interface {
 	FetchAll(ctx context.Context) error
-	DeleteBranches(ctx context.Context, branches []Branch) error
+	DeleteBranches(ctx context.Context, branches []model.Branch) error
 }

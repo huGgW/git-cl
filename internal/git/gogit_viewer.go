@@ -64,12 +64,11 @@ func (g *gogitViewer) GetLocalBranches(ctx context.Context) (LocalBranches, erro
 }
 
 func (g *gogitViewer) FilterLocalBranches(ctx context.Context, branches LocalBranches, filters ...Filter) []Branch {
-	currentExcludeFilter := func(branch Branch) bool {
-		return !branch.IsCurrent
-	}
-
 	branchSeq := slices.Values(branches.Branches)
+
+	// add current exclude filter because branch deletion cannot delete the current branch
 	branchSeq = iterator.Filter(branchSeq, currentExcludeFilter)
+
 	for _, filter := range filters {
 		branchSeq = iterator.Filter(branchSeq, filter)
 	}

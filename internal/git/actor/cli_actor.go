@@ -8,8 +8,7 @@ import (
 	"github.com/huGgW/git-cl/internal/git/model"
 )
 
-type cliActor struct {
-}
+type cliActor struct{}
 
 func NewCliActor() *cliActor {
 	return &cliActor{}
@@ -31,7 +30,7 @@ func (g *cliActor) DeleteBranches(ctx context.Context, branches []model.Branch) 
 
 	args := []string{"branch", "-D"}
 	for _, branch := range branches {
-		args = append(args, branch.Name)
+		args = append(args, branch.Name())
 	}
 
 	cmd := exec.CommandContext(ctx, "git", args...)

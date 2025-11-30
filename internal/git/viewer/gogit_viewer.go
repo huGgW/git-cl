@@ -21,8 +21,7 @@ var (
 	ErrFailedToGetHead  = errors.New("failed to get head")
 )
 
-type gogitViewer struct {
-}
+type gogitViewer struct{}
 
 func NewGogitViewer() *gogitViewer {
 	return &gogitViewer{}
@@ -50,17 +49,23 @@ func (g *gogitViewer) GetLocalBranches(ctx context.Context) (model.LocalBranches
 			return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		}
 
+		// TODO: handle worktree branches
 		branchName := branchRef.Name().Short()
-		branch := model.Branch{Name: branchName}
+		branch := model.LocalBranch{Name_: branchName}
 
 		if eq, err := g.refEqual(head, branchRef); err != nil {
 			return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		} else if eq {
-			branch.IsCurrent = true
+			branch.IsCurrent_ = true
 		}
 
 		localBranches.Branches = append(localBranches.Branches, branch)
 	}
+
+	for _, branch := range localBranches.Branches {
+		fmt.Printf("%+v\n", branch)
+	}
+	fmt.Println("---------------------")
 
 	return localBranches, nil
 }

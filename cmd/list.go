@@ -29,10 +29,10 @@ func listCmdRunE(cmd *cobra.Command, args []string) error {
 
 	fmt.Println("Local branches:")
 	for _, branch := range localBranches.Branches {
-		if branch.IsCurrent {
-			fmt.Printf("%s <- current\n", branch.Name)
+		if branch.IsCurrent() {
+			fmt.Printf("%s <- current\n", branch.Name())
 		} else {
-			fmt.Println(branch.Name)
+			fmt.Println(branch.Name())
 		}
 	}
 	return nil

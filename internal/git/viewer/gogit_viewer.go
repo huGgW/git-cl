@@ -53,6 +53,9 @@ func (g *gogitViewer) GetLocalBranches(ctx context.Context) (model.LocalBranches
 		branchName := branchRef.Name().Short()
 		branch := model.LocalBranch{Name_: branchName}
 
+		// FIXME: currently, we check current branch by comparing commit hases.
+		// This approach make false-positive when other branch has same HEAD commit.
+		// Also need to check name if ref is same.
 		if eq, err := g.refEqual(head, branchRef); err != nil {
 			return model.LocalBranches{}, fmt.Errorf("%w: %w", ErrFailedToGetLocalBranches, err)
 		} else if eq {

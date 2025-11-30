@@ -21,3 +21,17 @@ func (l LocalBranch) Name() string {
 func (l LocalBranch) IsCurrent() bool {
 	return l.IsCurrent_
 }
+
+type WorktreeBranch struct {
+	Name_ string
+	Path  string
+}
+
+func (w WorktreeBranch) Name() string {
+	return w.Name_
+}
+
+func (w WorktreeBranch) IsCurrent() bool {
+	// since we only going to allow exec program only in real repository, this should be always false.
+	return false
+}
